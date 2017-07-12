@@ -7,7 +7,7 @@ Constant Trait:
 Means you can build one of this objects and attach it to as many of your entities as you want. 
 So if you have a common styling no need to make one for every entity
 
-Unique Trait 
+Unique Trait:
 You can only have this object attached to one entity at a time.
 The reason for this is because it commonly holds something which can change. 
 This means it has a degree of mutability which means it would not be sane to allow you to attach him to multiple entities. 
