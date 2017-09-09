@@ -56,6 +56,13 @@ function CreateButton(onClick = () => {}) {
     return entity;
 }
 
+function CreateForm(entities = [], submit = () => { return false; }){
+	let entity = new Entity("form");
+	new Contents(entities).attach(entity);
+	new SubmitEvent(submit).attach(entity);
+	return entity;
+}
+
 function CreateContainer(entities = []) {
     let entity = new Entity("div");
     new Contents(entities).attach(entity);
@@ -374,6 +381,23 @@ function ClickEvent(onClick) {
     this.type = "ClickEvent";
     this.apply = (element) => element.onclick = (event) => onClick(event);
     this.remove = (element) => element.removeAttribute("onclick");
+}
+
+function SubmitEvent(onSubmit){
+    //inherit Constant Trait
+    this.attachedEntities = [];
+    this.attach = (entity) => {
+        this.attachedEntities.push(entity);
+        entity.addTrait(this);
+    };
+    this.detach = (entity) => {
+        this.attachedEntities.remove(entity);
+        entity.removeTrait(this.type);
+    };
+    //
+    this.type = "SubmitEvent";
+    this.apply = (element) => element.onsubmit = (event) => onSubmit(event);
+    this.remove = (element) => element.removeAttribute("onsubmit");
 }
 
 function LostFocusEvent(onLostFocus) {
