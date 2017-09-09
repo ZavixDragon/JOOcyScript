@@ -122,6 +122,12 @@ function createPasswordInput() {
     return new Entity("input").add(new Type("password"));
 }
 
+function createForm(entities = [], onSubmit = (event) => event.preventDefault()){
+    return new Entity("form")
+        .add(x => new Contents(x, entities))
+        .add(new SubmitEvent(onSubmit));
+}
+
 //Traits
 
 function Style(style) {
@@ -253,6 +259,10 @@ function DragEnterEvent(onDragEnter) {
 
 function LoadEvent(onLoad) {
     Event.call(this, "onload", onLoad);
+}
+
+function SubmitEvent(onSubmit){
+    Event.call(this, "onsubmit", onSubmit);
 }
 
 //Utils
