@@ -1,5 +1,3 @@
-//Entities
-
 function Entity(elementType) {
     let id = generateId();
 
@@ -8,7 +6,7 @@ function Entity(elementType) {
     this.add = (arg) => {
         let trait = arg instanceof Function ? arg(this) : arg;
         if (this[trait.constructor.name] !== undefined)
-            this.removeTrait(trait);
+            this.remove(trait);
         this[trait.constructor.name] = trait;
         if (this.isAlive)
             trait.apply(this.getElement());
@@ -49,13 +47,15 @@ function Entity(elementType) {
         if (this.isAlive)
             return document.getElementById(id);
         let element = document.createElement(elementType);
-        element.id = this.id;
-        for (let trait of this)
-            if (trait.apply !== undefined && trait.remove !== undefined)
-                trait.apply(element);
+        element.id = id;
+        for (let trait in this)
+            if (this[trait].apply !== undefined && this[trait].remove !== undefined)
+                this[trait].apply(element);
         return element;
     };
 }
+
+//Convenience functions
 
 function createImage(source = "") {
     return new Entity("img").add(new Source(source));
@@ -136,7 +136,11 @@ function Style(style) {
 }
 
 function Content(entity) {
-    this.apply = (element) => element.appendChild(entity.getElement());
+    this.apply = (element) => {
+        element.appendChild(entity.getElement());
+        entity.isAlive = true;
+    };
+
     this.remove = () => entity.erase();
 }
 
@@ -147,8 +151,10 @@ function Source(source) {
 
 function Contents(parent, entities) {
     this.apply = (element) => {
-        for (let entity of entities)
+        for (let entity of entities) {
             element.appendChild(entity.getElement());
+            entity.isAlive = true;
+        }
     };
 
     this.remove = () => {
